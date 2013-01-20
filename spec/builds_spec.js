@@ -1,5 +1,4 @@
-//https://bamboo-ci.codehaus.org/rest/api/latest/result/ANDROMDA-ANDROMDAALL.json
-//{"results":{"size":5,"expand":"result","start-index":0,"max-result":5,"result":[{"expand":null,"link":{"href":"https://bamboo-ci.codehaus.org/rest/api/latest/result/ANDROMDA-ANDROMDAALL-68","type":null,"rel":"self"}
+// example initialization
 var initialize_dashboard = function(){
 		dashboard.initialize({
 			groups : [
@@ -53,38 +52,38 @@ describe("groups", function(){
 
 describe("builds", function(){
 	it("should have urls", function(){
-		var build1 = dashboard.groups[0].builds[0];
-		var build2 = dashboard.groups[0].builds[1];
+		var jenkins_build = dashboard.groups[0].builds[0];
+		var bamboo_build = dashboard.groups[0].builds[1];
 
-		expect(build1.url).toEqual("http://jenkins.com:9080/job/PROJECT-NAME");
-		expect(build2.url).toEqual("http://bamboo.com:8085/browse/PROJECT-NAME");
+		expect(jenkins_build.url).toEqual("http://jenkins.com:9080/job/PROJECT-NAME");
+		expect(bamboo_build.url).toEqual("http://bamboo.com:8085/browse/PROJECT-NAME");
 	});
 
 	it("should have types", function(){
-		var build1 = dashboard.groups[0].builds[0];
-		var build2 = dashboard.groups[0].builds[1];
+		var jenkins_build = dashboard.groups[0].builds[0];
+		var bamboo_build = dashboard.groups[0].builds[1];
 
-		expect(build1.type).toEqual(dashboard.build_types.jenkins);
-		expect(build2.type).toEqual(dashboard.build_types.bamboo);
+		expect(jenkins_build.type).toEqual(dashboard.build_types.jenkins);
+		expect(bamboo_build.type).toEqual(dashboard.build_types.bamboo);
 	});
 
 	it("should have a refresh method", function(){
-		var build1 = dashboard.groups[0].builds[0];
-		var build2 = dashboard.groups[0].builds[1];
+		var jenkins_build = dashboard.groups[0].builds[0];
+		var bamboo_build = dashboard.groups[0].builds[1];
 
-		expect(_.isFunction(build1.refresh)).toEqual(true);
-		expect(_.isFunction(build2.refresh)).toEqual(true);
+		expect(_.isFunction(jenkins_build.refresh)).toEqual(true);
+		expect(_.isFunction(bamboo_build.refresh)).toEqual(true);
 	});
 
 	it("should create the correct rest jsonp url for jenkins", function(){
-		var build1 = dashboard.groups[0].builds[0];
-		var jenkins_url = build1.get_rest_url();
+		var jenkins_build = dashboard.groups[0].builds[0];
+		var jenkins_url = jenkins_build.get_rest_url();
 		expect(jenkins_url).toEqual("http://jenkins.com:9080/job/PROJECT-NAME/lastBuild/testReport/api/json?jsonp=?");
 	});
 
 	it("should create the correct rest jsonp url for bamboo)", function(){
-		var build2 = dashboard.groups[0].builds[1];
-		var bamboo_url = build2.get_rest_url();
+		var bamboo_build = dashboard.groups[0].builds[1];
+		var bamboo_url = bamboo_build.get_rest_url();
 		expect(bamboo_url).toEqual("http://bamboo.com:8085/rest/api/latest/result/PROJECT-NAME-latest.json?jsonp-callback=?");
 	});
 
@@ -94,14 +93,14 @@ describe("builds", function(){
 			options.success(bamboo_response);
     });
 
-		var build2 = dashboard.groups[0].builds[1];
+		var bamboo_build = dashboard.groups[0].builds[1];
 
-		build2.refresh();
+		bamboo_build.refresh();
 
-		expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(build2.get_rest_url());
+		expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(bamboo_build.get_rest_url());
 
-		expect(build2.data.failed_tests).toEqual(6);
-		expect(build2.data.total_tests).toEqual(1053);
+		expect(bamboo_build.data.failed_tests).toEqual(6);
+		expect(bamboo_build.data.total_tests).toEqual(1053);
 	});
 
 	it("should parse the jenkins data into a build data object", function(){
@@ -110,19 +109,19 @@ describe("builds", function(){
 			options.success(jenkins_response);
     });
 
-		var build1 = dashboard.groups[0].builds[0];
+		var jenkins_build = dashboard.groups[0].builds[0];
 
-		build1.refresh();
+		jenkins_build.refresh();
 
-		expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(build1.get_rest_url());
+		expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(jenkins_build.get_rest_url());
 
-		expect(build1.data.failed_tests).toEqual(3);
-		expect(build1.data.total_tests).toEqual(199);
+		expect(jenkins_build.data.failed_tests).toEqual(3);
+		expect(jenkins_build.data.total_tests).toEqual(199);
 	});
 });
 
-describe("dashboard.models.build", function(){
-	it("should have types", function(){
+describe("build_types", function(){
+	it("should be defined", function(){
 		expect(dashboard.build_types).toBeDefined();
 		expect(dashboard.build_types.jenkins).toBeDefined();
 		expect(dashboard.build_types.bamboo).toBeDefined();
