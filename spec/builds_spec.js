@@ -88,32 +88,28 @@ describe("builds", function(){
 	});
 
 	it("should parse the bamboo data into a build data object", function(){
+		
 		// use a spy so we don't use a live ajax request
 		spyOn($, "ajax").andCallFake(function(options) {
 			options.success(bamboo_response);
-    });
+		});
 
 		var bamboo_build = dashboard.groups[0].builds[1];
-
 		bamboo_build.refresh();
-
-		expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(bamboo_build.get_rest_url());
 
 		expect(bamboo_build.data.failed_tests).toEqual(6);
 		expect(bamboo_build.data.total_tests).toEqual(1053);
 	});
 
 	it("should parse the jenkins data into a build data object", function(){
+
 		// use a spy so we don't use a live ajax request
 		spyOn($, "ajax").andCallFake(function(options) {
 			options.success(jenkins_response);
-    });
+		});
 
 		var jenkins_build = dashboard.groups[0].builds[0];
-
 		jenkins_build.refresh();
-
-		expect($.ajax.mostRecentCall.args[0]["url"]).toEqual(jenkins_build.get_rest_url());
 
 		expect(jenkins_build.data.failed_tests).toEqual(3);
 		expect(jenkins_build.data.total_tests).toEqual(199);
