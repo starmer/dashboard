@@ -41,7 +41,7 @@ describe("the application", function(){
 
 	it("should refresh all builds for all groups", function(){
 		initialize_dashboard();
-		
+
 		_.each(dashboard.groups, function(group){
 			_.each(group.builds, function(build){
 				spyOn(build, "refresh");
@@ -52,7 +52,7 @@ describe("the application", function(){
 		
 		_.each(dashboard.groups, function(group){
 			_.each(group.builds, function(build){
-				console.log(build.mostRecentCall);
+				expect(build.refresh).toHaveBeenCalled();
 			});
 		});
 	});
@@ -133,6 +133,20 @@ describe("builds", function(){
 
 		expect(jenkins_build.data.failed_tests).toEqual(3);
 		expect(jenkins_build.data.total_tests).toEqual(199);
+	});
+
+	it("should know if it's success or fail", function(){
+		var passing_response = JSON.parse(JSON.stringify(jenkins_response));
+		passing_response.failCount = 0;
+		var success = dashboard.build_types.jenkins.parse_raw_response(passing_response);
+		expect(success.failed_tests).toEqual(0);
+		expect(success.total_tests).toEqual(199);
+		expect(success.status).toEqual("success");
+
+		var failure = dashboard.build_types.jenkins.parse_raw_response(jenkins_response);
+		expect(failure.failed_tests).toEqual(3);
+		expect(failure.total_tests).toEqual(199);
+		expect(failure.status).toEqual("fail");
 	});
 
 });

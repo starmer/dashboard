@@ -12,8 +12,8 @@ yellow: #FABD15
 ------------
 muted colors
 ------------
-red: #ae432e
-green: #77ab13
+red: #bc391f
+green: #7cbc01
 orange: #b5712e
 blue: #058dc7
 
@@ -52,19 +52,19 @@ body {
 }
 
 .fail .bar {
-	background-color:#ae432e;
+	background-color:#bc391f;
 }
 
 .fail .info {
-	color:#ae432e;
+	color:#bc391f;
 }
 
 .success .bar {
-	background-color:#77ab13;
+	background-color:#7cbc01;
 }
 
 .success .info {
-	color:#77ab13;
+	color:#7cbc01;
 }
 
 .info {
@@ -73,5 +73,5 @@ body {
 
 .build_name {
 	font-size: 16px;
-	text-align: center;
+	text-align: left;
 }

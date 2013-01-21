@@ -9,11 +9,22 @@ dashboard = {
 	},
 
 	refresh : function(){
-	_.each(dashboard.groups, function(group){
-		_.each(group.builds, function(build){
-			build.refresh();
+		_.each(dashboard.groups, function(group){
+			_.each(group.builds, function(build){
+				try {
+					build.refresh();
+				} catch (e) {
+					console.log(e);
+				}
+
+				dashboard.render();
+			});
 		});
-	});
+	},
+
+	render : function() {
+		var output = Mustache.render(this.templates.groups, this);
+		$("#content").html(output);
 	},
 
 	models : {
@@ -22,7 +33,7 @@ dashboard = {
 				var this_build = this;
 				$.ajax({
 					url:this.get_rest_url(),
-					jsonpCallback: 'jsonCallback',
+					jsonpCallback: 'jsonCallback' + Math.floor(Math.random()*1000000000),
 					contentType: "application/json",
 					dataType: 'jsonp',
 					success: function(json) {
@@ -50,7 +61,8 @@ dashboard = {
 			parse_raw_response : function(response){
 				return {
 					failed_tests : response.failCount,
-					total_tests : response.totalCount
+					total_tests : response.totalCount,
+					status : (response.failCount == 0) ? "success" : "fail"
 				};
 			}
 		},
@@ -61,7 +73,8 @@ dashboard = {
 			parse_raw_response : function(response){
 				return {
 						failed_tests : response.failedTestCount,
-						total_tests : response.successfulTestCount + response.failedTestCount
+						total_tests : response.successfulTestCount + response.failedTestCount,
+						status : (response.failedTestCount == 0) ? "success" : "fail"
 				};
 			}
 		}
@@ -74,7 +87,7 @@ dashboard = {
 		"					<div>" +
 		"{{#builds}}" +
 		"						<table class=\"builds\">" +
-		"							<tr class=\"fail\">" +
+		"							<tr class=\"{{data.status}}\">" +
 		"								<td>" +
 		"									<div class=\"bar\">" +
 		"									</div>" +
