@@ -8,6 +8,14 @@ dashboard = {
 		});
 	},
 
+	refresh : function(){
+	_.each(dashboard.groups, function(group){
+		_.each(group.builds, function(build){
+			build.refresh();
+		});
+	});
+	},
+
 	models : {
 		build : {
 			refresh : function() {
@@ -57,64 +65,31 @@ dashboard = {
 				};
 			}
 		}
+	},
+	templates : {
+		groups : 
+		"{{#groups}}" + 
+		"				<div class=\"group\">" +
+		"					<div class=\"group_name\">{{name}}</div>" +
+		"					<div>" +
+		"{{#builds}}" +
+		"						<table class=\"builds\">" +
+		"							<tr class=\"fail\">" +
+		"								<td>" +
+		"									<div class=\"bar\">" +
+		"									</div>" +
+		"								</td>" +
+		"								<td class=\"info\">" +
+		"									{{data.failed_tests}} / {{data.total_tests}}" +
+		"									<div class=\"build_name\">" +
+		"										{{name}}" +
+		"									</div>" +
+		"								</td>" +
+		"							</tr>" +
+		"{{/builds}}" +
+		"						</table>" +
+		"					</div>" +
+		"				</div>" +
+		"{{/groups}}"
 	}
 };
-
-$(function(){
-/*	
-	dashboard.initialize({
-		groups : [
-			{
-				name : "Team 1 Builds",
-				builds:[
-					{
-						url : "http://jenkins.com:9080/job/PROJECT-NAME",
-						type : dashboard.build_types.jenkins
-					},
-					{
-						url : "http://bamboo.com:8085/browse/PROJECT-NAME",
-						type : dashboard.build_types.bamboo
-					}
-				]
-			},{
-				name : "Team 2 Builds",
-				builds:[
-				]
-			}
-		]
-	});
-*/
-});
-
-/*
-$(function(){
-	var bamboo = "http://bamboo.internal.opennms.com:8085/rest/api/latest/result/OPENNMS-JUNITSPEEDUP-latest.json?jsonp-callback=?";
-	var jenkins = "http://builds.apache.org/job/DeltaSpike%20Weld%201.1.10/lastBuild/testReport/api/json?jsonp=?";
-	
-	$.ajax({
-		url:jenkins,
-    jsonpCallback: 'jsonCallback',
-    contentType: "application/json",
-    dataType: 'jsonp',
-    success: function(json) {
-       console.dir(json);
-    },
-    error: function(e) {
-       console.log(e.message);
-    }
-	});
-	
-	$.ajax({
-		url:bamboo,
-    jsonpCallback: 'jsonCallback',
-    contentType: "application/json",
-    dataType: 'jsonp',
-    success: function(json) {
-       console.dir(json);
-    },
-    error: function(e) {
-       console.log(e.message);
-    }
-	});
-});
-*/

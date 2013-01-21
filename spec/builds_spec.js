@@ -6,10 +6,12 @@ var initialize_dashboard = function(){
 					name : "Team 1 Builds",
 					builds:[
 						{
+							name : "Project Name 1",
 							url : "http://jenkins.com:9080/job/PROJECT-NAME",
 							type : dashboard.build_types.jenkins
 						},
 						{
+							name : "Project Name 2",
 							url : "http://bamboo.com:8085/browse/PROJECT-NAME",
 							type : dashboard.build_types.bamboo
 						}
@@ -35,7 +37,25 @@ describe("the application", function(){
 
 	it("should have models", function(){
 		expect(dashboard.models).toBeDefined();
-	})
+	});
+
+	it("should refresh all builds for all groups", function(){
+		initialize_dashboard();
+		
+		_.each(dashboard.groups, function(group){
+			_.each(group.builds, function(build){
+				spyOn(build, "refresh");
+			});
+		});
+
+		dashboard.refresh();
+		
+		_.each(dashboard.groups, function(group){
+			_.each(group.builds, function(build){
+				console.log(build.mostRecentCall);
+			});
+		});
+	});
 });
 
 describe("groups", function(){
@@ -114,6 +134,7 @@ describe("builds", function(){
 		expect(jenkins_build.data.failed_tests).toEqual(3);
 		expect(jenkins_build.data.total_tests).toEqual(199);
 	});
+
 });
 
 describe("build_types", function(){
