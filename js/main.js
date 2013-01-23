@@ -4,6 +4,7 @@ dashboard = {
 		_.each(this.groups, function(group){
 			_.each(group.builds, function(build){
 				$.extend(build, dashboard.models.build);
+				build.initialize();
 			});
 		});
 	},
@@ -29,15 +30,19 @@ dashboard = {
 
 	models : {
 		build : {
+			initialize : function(){
+				this.unique_id = Math.floor(Math.random() * 1000000000);
+			},
 			refresh : function() {
 				var this_build = this;
 				$.ajax({
 					url:this.get_rest_url(),
-					jsonpCallback: 'jsonCallback' + Math.floor(Math.random()*1000000000),
+					jsonpCallback: 'callback_' + this.unique_id,
 					contentType: "application/json",
 					dataType: 'jsonp',
 					success: function(json) {
 						this_build.handle_response_data(json);
+						dashboard.render();
 					},
 					error: function(e) {
 						console.log(e.message);
@@ -61,7 +66,7 @@ dashboard = {
 			parse_raw_response : function(response){
 				return {
 					failed_tests : response.failCount,
-					total_tests : response.totalCount,
+					total_tests : response.totalCount || response.passCount,
 					status : (response.failCount == 0) ? "success" : "fail"
 				};
 			}

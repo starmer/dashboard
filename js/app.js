@@ -30,7 +30,7 @@ $(function(){
 					},
 					{
 						name : "Project Name 3",
-						url : "https://builds.apache.org/job/DeltaSpike%20Weld%201.1.10/",
+						url : "https://builds.apache.org/job/Abdera2-trunk",
 						type : dashboard.build_types.jenkins
 					}
 				]
@@ -39,12 +39,9 @@ $(function(){
 	});
 
 	dashboard.refresh();
-	setTimeout(function(){
-		dashboard.refresh();
-	},2000);
 
-	setInterval(function(){
+	setInterval(function() {
 		dashboard.refresh();
-	},10000);
+	}, 30000);
 	
 });
