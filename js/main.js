@@ -1,7 +1,6 @@
 var JenkinsWidget = {
 	refresh : function(){
-		console.log("JenkinsWidget refresh");
-		// this.render
+		// this.render inside ajax callback?
 	},
 	refreshRate : 100,
 	template : "<div></div>"
@@ -9,7 +8,7 @@ var JenkinsWidget = {
 
 var IFrameWidget = {
 	refresh : function(){
-		console.log("IFrameWidget refresh");
+		
 	},
 	refreshRate : 100,
 	template : ""
@@ -27,24 +26,39 @@ DashApp = {
 	setupPages : function(){
 		for(var i = 0; i < this.pages.length; i++){
 			var page = this.pages[i];
+
+			this.setupPageView(page);
+
 			for(var j = 0; j < page.widgets.length; j++){
 				var widget = page.widgets[j];
 				eval("var type = " + widget.type);
-				console.log(type.refreshRate);
 				$.extend(widget, type);
 
 				this.schedule(widget);
 
-				widget.viewId = this.generateId();
+				this.setupWidgetView(widget, page);
 			}
 		}
 	},
 
+	// refactor: add this method to page object?
+	setupPageView : function(page){
+		page.viewId = this.generateId();
+		$("#" + DashApp.viewId).append('<div id="' + page.viewId + '"></div>');
+	},
+
+	// refactor: add this method to widget object?
+	setupWidgetView : function(widget, page){
+		widget.viewId = this.generateId();
+		$("#" + page.viewId).append('<div id="' + widget.viewId + '"></div>');
+	},
+
 	intervals : [],
-	schedule : function(widget){
+	
+	schedule : function(refreshable){
 		var intervalId = setInterval(function(){
-			widget.refresh();
-		}, widget.refreshRate);
+			refreshable.refresh();
+		}, refreshable.refreshRate);
 		this.intervals.push(intervalId);
 	},
 

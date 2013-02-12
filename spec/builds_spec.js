@@ -2,6 +2,7 @@ var exampleConfig = {
 	viewId : "content",
 	pages : [
 		{
+			name : "Page 1",
 			widgets : [
 				{
 					type : "JenkinsWidget",
@@ -16,6 +17,10 @@ var exampleConfig = {
 					}
 				}
 			]
+		},
+		{
+			name : "Page 2",
+			widgets : []
 		}
 	]
 };
@@ -46,14 +51,34 @@ describe("The dashboard application", function() {
 		expect(DashApp.viewId).toEqual("content");
 	});
 
+	it("should cycle through pages showing one at a time", function(){
+		
+	});
+
 	describe("Pages of the dashboard", function() {
+		it("should have a name", function(){
+			expect(DashApp.pages[0].name).toEqual("Page 1");
+		});
+
 		it("should have widgets", function() {
 			expect(DashApp.pages[0].widgets.length).toBeGreaterThan(0);
 		});
 
+		it("should have a viewId", function(){
+			expect(DashApp.pages[0].viewId).not.toEqual(DashApp.pages[1].viewId);
+		});
+
+		it("should have a dom element", function(){
+			var viewId = DashApp.pages[0].viewId;
+			expect($('#' + viewId).length).toBeGreaterThan(0);
+		});
+
 		// more view testing weirdness
 		it("should create placeholders for it's widgets", function(){
-			expect($("#"))
+			var jenkinsWidget = DashApp.pages[0].widgets[0];
+			var iframeWidget = DashApp.pages[0].widgets[1];
+			expect($("#" + jenkinsWidget.viewId).length).toBeGreaterThan(0);
+			expect($("#" + iframeWidget.viewId).length).toBeGreaterThan(0);
 		});
 	});
 
