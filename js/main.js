@@ -21,13 +21,37 @@ DashApp = {
 		$.extend(this, options);
 
 		this.setupPages();
+		this.setupPageCycling();
+	},
+
+	setupPageCycling : function(){
+		
+		$("#" + DashApp.pages[0].viewId).show();
+		DashApp.currentPageIndex = 0;
+
+		setInterval(function(){
+			
+			var nextIndex = DashApp.currentPageIndex + 1;
+			if(nextIndex == DashApp.pages.length){
+				nextIndex = 0;
+			}
+
+			var $currentPage = $("#" + DashApp.pages[DashApp.currentPageIndex].viewId);
+			var $nextPage = $("#" + DashApp.pages[nextIndex].viewId)
+			
+			$currentPage.fadeOut(600, function(){
+				$nextPage.fadeIn(600);
+			});
+			
+			DashApp.currentPageIndex = nextIndex;
+		}, DashApp.pageCycleTime);
 	},
 
 	setupPages : function(){
 		for(var i = 0; i < this.pages.length; i++){
 			var page = this.pages[i];
 
-			this.setupPageView(page);
+			this.setupPageView(page, i);
 
 			for(var j = 0; j < page.widgets.length; j++){
 				var widget = page.widgets[j];
@@ -42,15 +66,15 @@ DashApp = {
 	},
 
 	// refactor: add this method to page object?
-	setupPageView : function(page){
-		page.viewId = this.generateId();
-		$("#" + DashApp.viewId).append('<div id="' + page.viewId + '"></div>');
+	setupPageView : function(page, index){
+		page.viewId = "page_" + index;
+		$("#" + DashApp.viewId).append('<div class="page" id="' + page.viewId + '" style="display:none;">' + page.name + '</div>');
 	},
 
 	// refactor: add this method to widget object?
 	setupWidgetView : function(widget, page){
 		widget.viewId = this.generateId();
-		$("#" + page.viewId).append('<div id="' + widget.viewId + '"></div>');
+		$("#" + page.viewId).append('<div id="' + widget.viewId + '" style="display:none;"></div>');
 	},
 
 	intervals : [],

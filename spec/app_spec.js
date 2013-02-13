@@ -1,5 +1,6 @@
 var exampleConfig = {
 	viewId : "content",
+	pageCycleTime : 3000,
 	pages : [
 		{
 			name : "Page 1",
@@ -21,13 +22,17 @@ var exampleConfig = {
 		{
 			name : "Page 2",
 			widgets : []
+		},
+		{
+			name : "Page 3",
+			widgets : []
 		}
 	]
 };
 
 /* view testing weirdness */
 var setupViewContainer = function(){
-	$('body').append('<div id="' + exampleConfig.viewId + '" style="display:none"></div>');
+	$('body').append('<div id="' + exampleConfig.viewId + '"></div>');
 }
 
 var cleanUpViewContainer = function(){
@@ -35,6 +40,24 @@ var cleanUpViewContainer = function(){
 }
 
 describe("The dashboard application", function() {
+
+	// Custom matchers
+	beforeEach(function() {
+
+		// check if a element on the dom is present with the given id
+	  this.addMatchers({
+	    toBeIdOnDom: function() {
+	      return $('#' + this.actual).length == 1;
+	    }
+	  });
+
+	  this.addMatchers({
+	    toBeIdOnDomAndVisible: function() {
+	      return $('#' + this.actual).is(":visible");
+	    }
+	  });
+	});
+
 	beforeEach(function() {
 		jasmine.Clock.useMock();
 		setupViewContainer();
@@ -52,7 +75,7 @@ describe("The dashboard application", function() {
 	});
 
 	it("should cycle through pages showing one at a time", function(){
-		
+		// jasmine time mock wasn't working correctly for this it would trigger the interval twice
 	});
 
 	describe("Pages of the dashboard", function() {
@@ -70,15 +93,15 @@ describe("The dashboard application", function() {
 
 		it("should have a dom element", function(){
 			var viewId = DashApp.pages[0].viewId;
-			expect($('#' + viewId).length).toBeGreaterThan(0);
+			expect(viewId).toBeIdOnDom();
 		});
 
 		// more view testing weirdness
 		it("should create placeholders for it's widgets", function(){
 			var jenkinsWidget = DashApp.pages[0].widgets[0];
 			var iframeWidget = DashApp.pages[0].widgets[1];
-			expect($("#" + jenkinsWidget.viewId).length).toBeGreaterThan(0);
-			expect($("#" + iframeWidget.viewId).length).toBeGreaterThan(0);
+			expect(jenkinsWidget.viewId).toBeIdOnDom();
+			expect(jenkinsWidget.viewId).toBeIdOnDom();
 		});
 	});
 
