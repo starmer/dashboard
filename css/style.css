@@ -1,38 +1,70 @@
-/*
--------------
-bright colors
--------------
-red: #FD3B17
-blue: #147DFD
-light blue: #5CC3FE
-purple: #7753BF
-green: #48C917
-yellow: #FABD15
-
-------------
-muted colors
-------------
-red: #bc391f
-green: #7cbc01
-orange: #b5712e
-blue: #058dc7
-
-gray white: #d3d4d4;
-gray: #707275
-*/
-
 body {
 	background-color: black;
 	color:#d3d4d4;
 }
 
-.group {
-	float:left;
+.page .title {
+	font-size: 40px;
+	text-align: center;
 	padding:20px;
-	background-color:#191919;
-	border-radius: 5px;
-	margin:5px;
 }
+
+.build {
+	margin:10px 0;
+	width:300px;
+	clear:both;
+}
+
+.build .info {
+	font-size: 36px;
+	text-align: left;
+	line-height: 1.2;
+}
+
+.build .info .name {
+	font-size: 16px;
+	height:20px;
+	overflow: hidden;
+	white-space:nowrap;
+	text-overflow:ellipsis;
+}
+
+.build .indicator {
+	padding:0;
+	width:65px;
+	height:65px;
+	border-radius: 5px;
+	margin-right:10px;
+	float:left;
+}
+
+.success .indicator {
+	background-color:rgb(88, 196, 0);
+}
+
+.success .info {
+	color:rgb(88, 196, 0);
+}
+
+.fail .indicator {
+	background-color:#bc391f;
+}
+
+.fail .info {
+	color:#bc391f;
+}
+
+
+
+/*
+ .group {
+ 	float:left;
+ 	padding:20px;
+	background-color: rgba(255, 255, 255, 0.15);
+ 	border-radius: 5px;
+ 	margin:5px;
+ }
+
 
 .group_name {
 	color:#d3d4d4;
@@ -53,11 +85,11 @@ body {
 }
 
 .fail .bar {
-	background-color:#bc391f;
+	background-color::rgb(88, 196, 0);
 }
 
 .fail .info {
-	color:#bc391f;
+	color::rgb(88, 196, 0);
 }
 
 .success .bar {
@@ -76,3 +108,5 @@ body {
 	font-size: 16px;
 	text-align: left;
 }
+
+*/

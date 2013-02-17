@@ -7,15 +7,13 @@ var exampleConfig = {
 			widgets : [
 				{
 					type : "JenkinsWidget",
-					options : {
-						refreshRate : 102
-					}
+					name : "Jenkins Build 1",
+					refreshRate : 100,
+					url : "http://JENKINS-URL"
 				},
 				{
 					type : "IFrameWidget",
-					options : {
-						
-					}
+					name : "External Content 1",
 				}
 			]
 		},
@@ -65,7 +63,6 @@ describe("The dashboard application", function() {
 	});
 
 	afterEach(function(){
-		DashApp.cleanUp();
 		cleanUpViewContainer();
 	});
 
@@ -81,6 +78,11 @@ describe("The dashboard application", function() {
 	describe("Pages of the dashboard", function() {
 		it("should have a name", function(){
 			expect(DashApp.pages[0].name).toEqual("Page 1");
+		});
+
+		it("should render with a template", function(){
+			expect($('body').html().indexOf('Page 1')).toBeGreaterThan(0);
+			expect($('body').html().indexOf('Page 2')).toBeGreaterThan(0);
 		});
 
 		it("should have widgets", function() {
@@ -113,7 +115,7 @@ describe("The dashboard application", function() {
 			expect(jenkinsWidget.refresh).toBeDefined();
 			expect(jenkinsWidget.refreshRate).toBeDefined();
 			expect(jenkinsWidget.template).toBeDefined();
-			expect(DashApp.intervals.length).toEqual(2);
+			expect(jenkinsWidget.url).toEqual("http://JENKINS-URL");
 
 			jenkinsWidget.refresh = jasmine.createSpy('refresh');
 			jasmine.Clock.tick(101);
@@ -125,10 +127,55 @@ describe("The dashboard application", function() {
 			var iframeWidget = DashApp.pages[0].widgets[1];
 
 			expect(jenkinsWidget.viewId).toBeDefined();
-
 			expect(jenkinsWidget.viewId).not.toEqual(iframeWidget.viewId);
 		});
+
+		it("should have a data", function(){
+			var jenkinsWidget = DashApp.pages[0].widgets[0];
+			var iframeWidget = DashApp.pages[0].widgets[1];
+
+			expect(jenkinsWidget.name).toEqual("Jenkins Build 1");
+			expect(iframeWidget.name).toEqual("External Content 1");
+		});
+
+	});
+});
+
+describe("JenkinsWidget", function(){
+	it("should create the correct rest jsonp url for jenkins", function(){
+		var widget = $.extend(JenkinsWidget,{url:"http://jenkins.com:9080/job/PROJECT-NAME"});
+		expect(widget.getRestUrl()).toEqual("http://jenkins.com:9080/job/PROJECT-NAME/lastCompletedBuild/testReport/api/json?jsonp=?");
 	});
 
+	it("should parse the jenkins data into a build data object", function(){
+		var response = {"failCount":3,"skipCount":0,"totalCount":199,"urlName":"testReport","childReports":null};
 
+		// use a spy so we don't use a live ajax request
+		spyOn($, "ajax").andCallFake(function(options) {
+			options.success(response);
+		});
+
+		var widget = $.extend({}, JenkinsWidget, {url:"http://jenkins.com:9080/job/PROJECT-NAME", refreshRate:100});
+		widget.refresh();
+
+		expect(widget.data.failed_tests).toEqual(3);
+		expect(widget.data.total_tests).toEqual(199);
+		expect(widget.data.status).toEqual("fail");
+	});
+
+	it("should initialize", function(){
+		var widget = $.extend(JenkinsWidget, {url:"http://jenkins.com:9080/job/PROJECT-NAME"});
+		widget.initialize();
+		expect(widget.viewId).toBeGreaterThan(0);
+	});
+});
+
+describe("GroupWidget", function(){
+	it("should have multpile widgets", function(){
+		var widget = $.extend({},GroupWidget,{name:'Group Widget 1'});
+		expect(widget).toBeDefined();
+		expect(widget.widgets).toBeDefined();
+		expect(widget.name).toEqual('Group Widget 1');
+
+	});
 });
