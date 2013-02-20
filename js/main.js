@@ -1,29 +1,26 @@
-var ProtoWidget = {
-	viewId : null,
-	initialize : function(){
-		this.viewId = DashApp.generateId();
-	},
-	schedule : function(){
-		var widget = this;
-		setInterval(function(){
-			widget.refresh();
-		}, widget.refreshRate);
-	},
-};
-
 var JenkinsWidget = {
 	url : null,
 	parsedData : null,
+	initialize : function(){
+		this.viewId = DashApp.generateId();
+		this.schedule();
+	},
 	refresh : function(){
-		widget = this;
+		var widget = this;
+		var success = function(json) {
+			widget.render(json);
+		};
+
+		window['callback_' + widget.viewId] = function(json) {
+			success(json);
+		};
+
 		$.ajax({
 			url: widget.getRestUrl(),
 			jsonpCallback: 'callback_' + widget.viewId,
 			contentType: "application/json",
 			dataType: 'jsonp',
-			success: function(json) {
-				widget.render(json);
-			}
+			success: success
 		});
 	},
 	getRestUrl : function(){
@@ -41,25 +38,65 @@ var JenkinsWidget = {
 			status : (json.failCount == 0) ? "success" : "fail"
 		};
 	},
-
-	template : '<div class="build success"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
+	getInitialView : function(){
+		return '<div id="' + this.viewId + '" class="loading">Loading</div>';
+	},
+	schedule : function(){
+		var widget = this;
+		setInterval(function(){
+			widget.refresh();
+		}, widget.refreshRate);
+	},
+	template : '<div class="build success" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
 };
 
 var IFrameWidget = {
+	initialize : function(){
+		this.viewId = DashApp.generateId();
+		this.schedule();
+	},
 	refresh : function(){
-		
+		var renderedView = Mustache.render(this.template, this);
+		$("#" + this.viewId).replaceWith(renderedView);
 	},
 	refreshRate : 10000,
-
-	template : ""
+	getInitialView : function(){
+		return '<div id="' + this.viewId + '" class="loading">Loading</div>';
+	},
+	schedule : function(){
+		var widget = this;
+		setInterval(function(){
+			widget.refresh();
+		}, widget.refreshRate);
+	},
+	template : '<div class="iframe" id="{{viewId}}"><iframe src="{{url}}" width="300" height="300"></iframe></div>'
 };
-
-$.extend(IFrameWidget, ProtoWidget);
-$.extend(JenkinsWidget, ProtoWidget);
 
 var GroupWidget = {
 	name : null,
-	widgets : []
+	widgets : [],
+	initialize : function(){
+		this.viewId = DashApp.generateId();
+		this.viewElement = $(this.render());
+		for(var i = 0; i < this.widgets.length; i++){
+			var widget = this.widgets[i];
+			
+			DashApp.extendByType(widget);
+			
+			this.widgets[i].initialize();
+
+			this.viewElement.append(widget.getInitialView());
+			
+			widget.schedule();
+		}		
+	},
+	render : function(){
+		return Mustache.render(this.template, this);
+	},
+	getInitialView : function(){
+		return this.viewElement;
+	},
+	template : '<div class="group" id={{viewId}}><div class="name">{{name}}</div></div>'
 }
 
 DashApp = {
@@ -102,16 +139,14 @@ DashApp = {
 			this.setupPageView(page, i);
 
 			for(var j = 0; j < page.widgets.length; j++){
-				
-				// todo this might be better placed in a widget object or service/helper obj?, widget.init
-				eval("var type = " + page.widgets[j].type);
-				page.widgets[j] = $.extend({}, type, page.widgets[j]);
-				widget = page.widgets[j];
-				widget.initialize();
+				var widget = page.widgets[j];
 
+				DashApp.extendByType(widget);
+
+				widget.initialize();
+				
 				// todo this should be something like page.addWidget
-				this.setupWidgetView(widget, page);
-				widget.schedule();
+				$("#" + page.viewId).append(widget.getInitialView());
 			}
 		}
 	},
@@ -123,16 +158,15 @@ DashApp = {
 		$("#" + DashApp.viewId).append(renderedPageView);
 	},
 
-	// refactor: add this method to widget object?
-	setupWidgetView : function(widget, page){
-		//var html = widget.getViewHTML();
-		//page.addSubViewHTML();
-
-		$("#" + page.viewId).append('<div id="' + widget.viewId + '" >Loading</div>');
-	},
-
 	generateId : function(){
 		return Math.floor(Math.random() * 1000000);
+	},
+
+	// Utility function to extend widgets
+	extendByType : function(widget){
+		eval("var type = " + widget.type);
+		var tempWidget = $.extend({}, type, widget);
+		$.extend(widget, tempWidget);
 	}
 };
 

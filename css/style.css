@@ -1,6 +1,7 @@
 body {
 	background-color: black;
 	color:#d3d4d4;
+	padding:10px;
 }
 
 .page .title {
@@ -9,16 +10,25 @@ body {
 	padding:20px;
 }
 
-.build {
-	margin:10px 0;
-	width:300px;
+.build, .loading, .iframe{
+	float:left;
+	margin:10px;
 	clear:both;
+	padding:10px;
+	background-color: rgba(255, 255, 255, 0.15);
+	border-radius: 5px;
+}
+
+.group .build, .group .loading {
+	padding:10px;
+	background:none;
 }
 
 .build .info {
 	font-size: 36px;
 	text-align: left;
 	line-height: 1.2;
+	min-width:200px;
 }
 
 .build .info .name {
@@ -54,59 +64,20 @@ body {
 	color:#bc391f;
 }
 
-
-
-/*
- .group {
- 	float:left;
- 	padding:20px;
+.group {
+	float:left;
+	padding:20px;
 	background-color: rgba(255, 255, 255, 0.15);
- 	border-radius: 5px;
- 	margin:5px;
- }
+	border-radius: 5px;
+	margin:5px;
+}
 
-
-.group_name {
+.group > .name {
 	color:#d3d4d4;
 	font-size:36px;
 }
 
-.builds td {
-	padding:5px;
-	color:#707275;
-	text-align:right;
+iframe {
+	border:1px solid black;
+	margin:10px;
 }
-
-.bar {
-	padding:0;
-	width:65px;
-	height:65px;
-	border-radius: 5px;
-}
-
-.fail .bar {
-	background-color::rgb(88, 196, 0);
-}
-
-.fail .info {
-	color::rgb(88, 196, 0);
-}
-
-.success .bar {
-	background-color:#7cbc01;
-}
-
-.success .info {
-	color:#7cbc01;
-}
-
-.info {
-	font-size: 36px;
-}
-
-.build_name {
-	font-size: 16px;
-	text-align: left;
-}
-
-*/

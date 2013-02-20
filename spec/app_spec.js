@@ -14,6 +14,24 @@ var exampleConfig = {
 				{
 					type : "IFrameWidget",
 					name : "External Content 1",
+				},
+				{
+					type : "GroupWidget",
+					name : "Group Widget 1",
+					widgets : [
+						{
+							type : "JenkinsWidget",
+							name : "Jenkins Build 1",
+							refreshRate : 100,
+							url : "http://JENKINS-URL"
+						},
+						{
+							type : "JenkinsWidget",
+							name : "Jenkins Build 2",
+							refreshRate : 100,
+							url : "http://JENKINS-URL"
+						}
+					]
 				}
 			]
 		},
@@ -73,6 +91,21 @@ describe("The dashboard application", function() {
 
 	it("should cycle through pages showing one at a time", function(){
 		// jasmine time mock wasn't working correctly for this it would trigger the interval twice
+	});
+
+	it("should provide a way to extend widgets", function(){
+		expect(DashApp.extendByType).toBeDefined();
+		var widget = {
+					type : "JenkinsWidget",
+					name : "Jenkins Build 1",
+					refreshRate : 100,
+					url : "http://JENKINS-URL"
+		};
+
+		DashApp.extendByType(widget);
+
+		expect(widget.template).toBeDefined();
+
 	});
 
 	describe("Pages of the dashboard", function() {
@@ -139,9 +172,44 @@ describe("The dashboard application", function() {
 		});
 
 	});
+
+	describe("GroupWidget instance", function(){
+		it("should have widgets", function(){
+			var groupWidget = DashApp.pages[0].widgets[2];
+			expect(groupWidget.widgets.length).toBeGreaterThan(0);
+		});
+
+		it("should render the default template", function(){
+			var groupWidget = DashApp.pages[0].widgets[2];
+			expect(groupWidget.viewId).toBeIdOnDom();
+			expect($('#' + groupWidget.viewId).html().indexOf(groupWidget.name)).toBeGreaterThan(-1);
+			expect(groupWidget.widgets[0].viewId).toBeIdOnDom();
+		});
+
+		xit("should delegate widget setup", function(){
+			var groupWidget = DashApp.pages[0].widgets[2];
+			expect(groupWidget.viewId).toBeDefined();
+			expect(groupWidget.widgets[0].viewId).toBeDefined();
+		});
+
+		xit("should delegate scheduling", function(){
+			var groupWidget = DashApp.pages[0].widgets[2];
+
+			console.log(groupWidget);
+			groupWidget.widgets[0].schedule();
+
+			spyOn(groupWidget.widgets[0],'schedule');
+			groupWidget.schedule();
+			expect(groupWidget.widgets[0].schedule).toHaveBeenCalled();
+		});
+	});
 });
 
 describe("JenkinsWidget", function(){
+	beforeEach(function() {
+		jasmine.Clock.useMock();
+	});
+
 	it("should create the correct rest jsonp url for jenkins", function(){
 		var widget = $.extend(JenkinsWidget,{url:"http://jenkins.com:9080/job/PROJECT-NAME"});
 		expect(widget.getRestUrl()).toEqual("http://jenkins.com:9080/job/PROJECT-NAME/lastCompletedBuild/testReport/api/json?jsonp=?");
@@ -168,6 +236,11 @@ describe("JenkinsWidget", function(){
 		widget.initialize();
 		expect(widget.viewId).toBeGreaterThan(0);
 	});
+
+	it("should have an initial view", function(){
+		expect(JenkinsWidget.getInitialView()).toBeDefined();
+		expect(JenkinsWidget.getInitialView().indexOf("Loading")).toBeGreaterThan(-1);
+	});
 });
 
 describe("GroupWidget", function(){
@@ -176,6 +249,5 @@ describe("GroupWidget", function(){
 		expect(widget).toBeDefined();
 		expect(widget.widgets).toBeDefined();
 		expect(widget.name).toEqual('Group Widget 1');
-
 	});
 });
