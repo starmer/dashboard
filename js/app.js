@@ -10,16 +10,22 @@ var config = {
 				{
 					name : "Jenkins Build 1",
 					type : "JenkinsWidget",
-					refreshRate : 3000,
+					refreshRate : 30000,
 					url : "https://partnerdemo.ci.cloudbees.com/job/mongo-chess-cobertura"
+				},
+				{
+					name : "Bamboo Build 1",
+					type : "BambooWidget",
+					refreshRate : 30000,
+					url : "http://bamboo.igniterealtime.org/browse/TINDER-TRUNK"
 				},
 				{
 					type : "IFrameWidget",
 					url : "http://jamesstarmer.com/blog",
-					refreshRate : 3000
+					refreshRate : 300000
 				}
 			]
-		}/*,
+		},
 		{
 			name : "Page 2",
 			widgets : [
@@ -40,9 +46,14 @@ var config = {
 							url : "https://partnerdemo.ci.cloudbees.com/job/mongo-chess/"
 						}
 					]
+				},
+				{
+					type : "IFrameWidget",
+					url : "http://jamesstarmer.com/blog",
+					refreshRate : 300000
 				}
 			]
-		}*/
+		}
 	]
 };
 
