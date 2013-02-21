@@ -38,7 +38,7 @@ var BuildWidget = {
 			widget.refresh();
 		}, widget.refreshRate);
 	},
-	template : '<div class="build success" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
+	template : '<div class="build {{data.status}}" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
 }
 
 var JenkinsWidget = {

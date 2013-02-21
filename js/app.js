@@ -17,7 +17,7 @@ var config = {
 					name : "Bamboo Build 1",
 					type : "BambooWidget",
 					refreshRate : 30000,
-					url : "http://bamboo.igniterealtime.org/browse/TINDER-TRUNK"
+					url : "https://bamboo-ci.codehaus.org/browse/JETTY-ECLIPSETRUNK8"
 				},
 				{
 					type : "IFrameWidget",
