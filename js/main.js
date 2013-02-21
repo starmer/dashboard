@@ -79,31 +79,17 @@ var SonarWidget = {
 	},
 	parseData : function(json){
 		var coverage = parseFloat(json[0].msr[0].val);
-		status = this.getStatus(coverage);
 
 		this.data = {
-			name: this.name,
-			status:status,
+			name : this.name,
+			hue : coverage * 1.2 - 60,
 			coverage_percentage : coverage + "%"
 		}
 	},
-	getStatus : function(percentage){
-		if(percentage >= 85){
-			return "success";
-		} else if (percentage >= 70) {
-			return "success_stage_1";
-		} else if (percentage >= 60) {
-			return "success_stage_2";
-		} else {
-			return "fail";
-		}
-	},
-	template : '<div class="build {{data.status}}" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.coverage_percentage}}</div><div class="name">{{name}}</div></div></div>'
+	template : '<div class="build" id="{{viewId}}" style="color:hsl({{data.hue}}, 72%, 43%);"><div class="indicator" style="background-color:hsl({{data.hue}}, 72%, 43%);"></div><div class="info"><div class="tests">{{data.coverage_percentage}}</div><div class="name">{{name}}</div></div></div>'
 };
 
 SonarWidget = $.extend({}, BuildWidget, SonarWidget);
-
-
 
 var IFrameWidget = {
 	initialize : function(){
