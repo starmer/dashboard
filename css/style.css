@@ -13,7 +13,6 @@ body {
 .build, .loading, .iframe{
 	float:left;
 	margin:10px;
-	clear:both;
 	padding:10px;
 	background-color: rgba(255, 255, 255, 0.15);
 	border-radius: 5px;
@@ -22,6 +21,7 @@ body {
 .group .build, .group .loading {
 	padding:10px;
 	background:none;
+	clear:both;
 }
 
 .build .info {
