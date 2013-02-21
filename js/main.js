@@ -69,6 +69,42 @@ var BambooWidget = {
 };
 $.extend(BambooWidget, BuildWidget);
 
+var SonarWidget = {
+	getRestUrl : function(){
+		//api/resources?&metrics=coverage&callback=?&format=json&resource=
+		//dashboard/index
+		return this.url.replace(/dashboard\/index\//,"api\/resources?&metrics=coverage&callback=?&format=json&resource=");
+
+		//return 'http://nemo.sonarsource.org/dashboard/index/436560';
+	},
+	parseData : function(json){
+		var coverage = parseFloat(json[0].msr[0].val);
+		status = this.getStatus(coverage);
+
+		this.data = {
+			name: this.name,
+			status:status,
+			coverage_percentage : coverage + "%"
+		}
+	},
+	getStatus : function(percentage){
+		if(percentage >= 85){
+			return "success";
+		} else if (percentage >= 70) {
+			return "success_stage_1";
+		} else if (percentage >= 60) {
+			return "success_stage_2";
+		} else {
+			return "fail";
+		}
+	},
+	template : '<div class="build {{data.status}}" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.coverage_percentage}}</div><div class="name">{{name}}</div></div></div>'
+};
+
+SonarWidget = $.extend({}, BuildWidget, SonarWidget);
+
+
+
 var IFrameWidget = {
 	initialize : function(){
 		this.viewId = DashApp.generateId();

@@ -2,7 +2,7 @@ $(function(){
 var config = {
 	viewId : "content",
 	pageCycleTime : 90000,
-	
+	// 
 	pages : [
 		{
 			name : "Page 1",
@@ -20,15 +20,16 @@ var config = {
 					url : "https://bamboo-ci.codehaus.org/browse/JETTY-ECLIPSETRUNK8"
 				},
 				{
+					name : "Sonar Project 1",
+					type : "SonarWidget",
+					refreshRate : 30000,
+					url : "http://nemo.sonarsource.org/dashboard/index/436560"
+				},
+				{
 					type : "IFrameWidget",
 					url : "http://jamesstarmer.com/blog",
 					refreshRate : 300000
-				}
-			]
-		},
-		{
-			name : "Page 2",
-			widgets : [
+				},
 				{
 					name : "Group 1",
 					type : "GroupWidget",
@@ -40,10 +41,45 @@ var config = {
 							url : "https://partnerdemo.ci.cloudbees.com/job/stockfishchess-ios-ipad-touchtest"
 						},
 						{
-							name : "Jenkins Build 3",
+							name : "Bamboo Build 1",
+							type : "BambooWidget",
+							refreshRate : 30000,
+							url : "https://bamboo-ci.codehaus.org/browse/JETTY-ECLIPSETRUNK8"
+						},
+						{
+							name : "Sonar Project 1",
+							type : "SonarWidget",
+							refreshRate : 30000,
+							url : "http://nemo.sonarsource.org/dashboard/index/436560"
+						}
+					]
+				}
+			]
+		},
+		{
+			name : "Page 2",
+			widgets : [
+				{
+					name : "Group 2",
+					type : "GroupWidget",
+					widgets : [
+						{
+							name : "Jenkins Build",
 							type : "JenkinsWidget",
 							refreshRate : 3000,
-							url : "https://partnerdemo.ci.cloudbees.com/job/mongo-chess/"
+							url : "https://partnerdemo.ci.cloudbees.com/job/stockfishchess-ios-ipad-touchtest"
+						},
+						{
+							name : "Bamboo Build",
+							type : "BambooWidget",
+							refreshRate : 30000,
+							url : "https://bamboo-ci.codehaus.org/browse/JETTY-ECLIPSETRUNK8"
+						},
+						{
+							name : "Sonar Project",
+							type : "SonarWidget",
+							refreshRate : 30000,
+							url : "http://nemo.sonarsource.org/dashboard/index/436560"
 						}
 					]
 				},
