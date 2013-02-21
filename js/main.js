@@ -1,4 +1,4 @@
-var JenkinsWidget = {
+var BuildWidget = {
 	url : null,
 	parsedData : null,
 	initialize : function(){
@@ -23,13 +23,27 @@ var JenkinsWidget = {
 			success: success
 		});
 	},
-	getRestUrl : function(){
-		return this.url + "/lastCompletedBuild/testReport/api/json?jsonp=?";
-	},
 	render : function(json){
 		this.parseData(json);
 		var renderedView = Mustache.render(this.template, this);
 		$("#" + this.viewId).replaceWith(renderedView);
+	},
+	getInitialView : function(){
+		return '<div id="' + this.viewId + '" class="loading">Loading</div>';
+	},
+	schedule : function(){
+		var widget = this;
+		widget.refresh();
+		setInterval(function(){
+			widget.refresh();
+		}, widget.refreshRate);
+	},
+	template : '<div class="build success" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
+}
+
+var JenkinsWidget = {
+	getRestUrl : function(){
+		return this.url + "/lastCompletedBuild/testReport/api/json?jsonp=?";
 	},
 	parseData : function(json){
 		this.data = {
@@ -37,52 +51,13 @@ var JenkinsWidget = {
 			total_tests : json.totalCount || json.passCount,
 			status : (json.failCount == 0) ? "success" : "fail"
 		};
-	},
-	getInitialView : function(){
-		return '<div id="' + this.viewId + '" class="loading">Loading</div>';
-	},
-	schedule : function(){
-		var widget = this;
-		widget.refresh();
-		setInterval(function(){
-			widget.refresh();
-		}, widget.refreshRate);
-	},
-	template : '<div class="build success" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
+	}
 };
+$.extend(JenkinsWidget, BuildWidget);
 
 var BambooWidget = {
-	url : null,
-	parsedData : null,
-	initialize : function(){
-		this.viewId = DashApp.generateId();
-		this.schedule();
-	},
-	refresh : function(){
-		var widget = this;
-		var success = function(json) {
-			widget.render(json);
-		};
-
-		window['callback_' + widget.viewId] = function(json) {
-			success(json);
-		};
-
-		$.ajax({
-			url: widget.getRestUrl(),
-			jsonpCallback: 'callback_' + widget.viewId,
-			contentType: "application/json",
-			dataType: 'jsonp',
-			success: success
-		});
-	},
 	getRestUrl : function(){
 		return this.url.replace(/\/browse\//,"\/rest\/api\/latest\/result\/") + "-latest.json?jsonp-callback=?";
-	},
-	render : function(json){
-		this.parseData(json);
-		var renderedView = Mustache.render(this.template, this);
-		$("#" + this.viewId).replaceWith(renderedView);
 	},
 	parseData : function(json){
 		this.data = {
@@ -90,19 +65,9 @@ var BambooWidget = {
 			total_tests : json.successfulTestCount + json.failedTestCount,
 			status : (json.failedTestCount == 0) ? "success" : "fail"
 		};
-	},
-	getInitialView : function(){
-		return '<div id="' + this.viewId + '" class="loading">Loading</div>';
-	},
-	schedule : function(){
-		var widget = this;
-		widget.refresh();
-		setInterval(function(){
-			widget.refresh();
-		}, widget.refreshRate);
-	},
-	template : '<div class="build success" id="{{viewId}}"><div class="indicator"></div><div class="info"><div class="tests">{{data.failed_tests}} / {{data.total_tests}}</div><div class="name">{{name}}</div></div></div>'
+	}
 };
+$.extend(BambooWidget, BuildWidget);
 
 var IFrameWidget = {
 	initialize : function(){
