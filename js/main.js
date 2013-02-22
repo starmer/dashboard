@@ -109,7 +109,7 @@ var IFrameWidget = {
 			widget.refresh();
 		}, widget.refreshRate);
 	},
-	template : '<div class="iframe" id="{{viewId}}"><iframe src="{{url}}" width="300" height="300"></iframe></div>'
+	template : '<div class="iframe" id="{{viewId}}"><iframe src="{{url}}" width="{{width}}" height="{{height}}"></iframe></div>'
 };
 
 var GroupWidget = {
