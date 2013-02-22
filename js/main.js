@@ -97,14 +97,14 @@ var IFrameWidget = {
 		this.schedule();
 	},
 	refresh : function(){
-		var renderedView = Mustache.render(this.template, this);
-		
-		//todo, not sure why this isn't working on the first call
-		$("#" + this.viewId).replaceWith(renderedView);
+		$("#" + this.viewId).replaceWith(this.render());
 	},
 	refreshRate : 10000,
 	getInitialView : function(){
-		return '<div id="' + this.viewId + '" class="loading">Loading</div>';
+		return this.render(); //'<div id="' + this.viewId + '" class="loading">Loading</div>';
+	},
+	render : function(){
+		return Mustache.render(this.template, this);
 	},
 	schedule : function(){
 		var widget = this;
