@@ -78,7 +78,7 @@ var SonarWidget = {
 
 		this.data = {
 			name : this.name,
-			hue : coverage * 1.2 - 60,
+			hue : Math.round((Math.max((coverage - 50) * 2.4, 0) / 10)) * 10,
 			coverage_percentage : coverage + "%"
 		}
 	},
