@@ -6,4 +6,4 @@ Extensible JavaScript dashboard.
 See a live example here:
 http://starmer.github.com/dashboard/
 
-![Screenshot](starmer.github.com/dashboard/img/builds.jpg)
+![Screenshot](https://raw.github.com/starmer/dashboard/master/img/builds.png)
