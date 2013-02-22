@@ -120,11 +120,9 @@ var GroupWidget = {
 		this.viewElement = $(this.render());
 		for(var i = 0; i < this.widgets.length; i++){
 			var widget = this.widgets[i];
-			
-			DashApp.extendByType(widget);
-			
-			this.widgets[i].initialize();
 
+			DashApp.extendByType(widget);
+			this.widgets[i].initialize();
 			this.viewElement.append(widget.getInitialView());
 			
 			widget.schedule();
@@ -155,7 +153,6 @@ DashApp = {
 		DashApp.currentPageIndex = 0;
 
 		setInterval(function(){
-			
 			var nextIndex = DashApp.currentPageIndex + 1;
 			if(nextIndex == DashApp.pages.length){
 				nextIndex = 0;
