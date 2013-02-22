@@ -71,11 +71,7 @@ $.extend(BambooWidget, BuildWidget);
 
 var SonarWidget = {
 	getRestUrl : function(){
-		//api/resources?&metrics=coverage&callback=?&format=json&resource=
-		//dashboard/index
 		return this.url.replace(/dashboard\/index\//,"api\/resources?&metrics=coverage&callback=?&format=json&resource=");
-
-		//return 'http://nemo.sonarsource.org/dashboard/index/436560';
 	},
 	parseData : function(json){
 		var coverage = parseFloat(json[0].msr[0].val);
@@ -195,7 +191,7 @@ DashApp = {
 		}
 	},
 
-	// refactor: add this method to page object?
+	// todo add this method to page object?
 	setupPageView : function(page, index){
 		page.viewId = "page_" + index;
 		var renderedPageView = Mustache.render(DashApp.pageTemplate, page);
