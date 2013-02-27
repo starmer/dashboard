@@ -1,9 +1,12 @@
-Dashboard
-=========
-
+# Dashboard
 Extensible JavaScript dashboard.
 
-See a live example here:
+## Install
+
+1. git clone https://github.com/starmer/dashboard.git
+2. Update js/app.js with desired widgets and pages
+
+## Live Demo
 http://starmer.github.com/dashboard/
 
 ![Screenshot](https://raw.github.com/starmer/dashboard/master/img/builds.png)
