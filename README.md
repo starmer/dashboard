@@ -11,3 +11,7 @@ Extensible JavaScript dashboard.
 http://starmer.github.com/dashboard/
 
 ![Screenshot](https://raw.github.com/starmer/dashboard/master/img/builds.png)
+
+## License
+
+Dashboard is released under the [MIT License](http://www.opensource.org/licenses/MIT).
